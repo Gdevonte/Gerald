@@ -1,0 +1,30 @@
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/chain', methods=['GET'])
+def get_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain)
+    }
+    return jsonify(response), 200
+
+@app.route('/transaction/<string:transaction_id>', methods=['GET'])
+def get_transaction(transaction_id):
+    # Fetch the transaction details by ID
+    transaction = blockchain.get_transaction(transaction_id)
+    if transaction:
+        response = {
+            'transaction': transaction,
+            'status': 'success'
+        }
+    else:
+        response = {
+            'message': 'Transaction not found',
+            'status': 'error'
+        }
+    return jsonify(response), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
